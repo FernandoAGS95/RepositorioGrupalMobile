@@ -34,8 +34,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.app_grupo7.model.Perfume
 import com.example.app_grupo7.perfume.store.PerfumeStoreSqlite
 import com.example.app_grupo7.ui.Dimens
+import com.example.app_grupo7.util.vibrar
 import com.example.app_grupo7.viewmodel.PerfumeViewModel
 import kotlinx.coroutines.launch
+
 
 // ----- Modelo de UI local: igual a Perfume + imageUri opcional -----
 private data class UiPerfume(
@@ -141,7 +143,7 @@ fun CatalogoScreen(
             ) { SnackbarHost(hostState = snackbarHostState) }
         }
     ) { inner ->
-
+        val ctx = LocalContext.current
         val contentModifier = Modifier
             .padding(inner)
             .fillMaxSize()
@@ -169,6 +171,7 @@ fun CatalogoScreen(
                             p = p,
                             onAdd = {
                                 // 1) Agregamos al carrito
+                                vibrar(ctx)
                                 onAddToCart?.invoke(p.id, p.nombre, p.precio, p.imageRes,p.imageUri)
                                 // 2) Feedback visual
                                 scope.launch {
