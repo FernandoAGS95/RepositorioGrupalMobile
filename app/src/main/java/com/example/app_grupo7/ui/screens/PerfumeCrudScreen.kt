@@ -113,7 +113,7 @@ private fun PerfumeRow(
             }
             Image(
                 bitmap = (bitmap ?: placeholderBitmap()).asImageBitmap(),
-                contentDescription = p.nombre,
+                contentDescription = p.nombre ?: "perfume",
                 modifier = Modifier
                     .size(60.dp)
                     .clip(RoundedCornerShape(10.dp)),
@@ -121,10 +121,10 @@ private fun PerfumeRow(
             )
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
-                Text(p.nombre, style = MaterialTheme.typography.titleMedium)
+                Text(p.nombre ?: "Sin nombre", style = MaterialTheme.typography.titleMedium)
                 Spacer(Modifier.height(4.dp))
                 Text(
-                    "$${p.precio}",
+                    "$${p.precio ?: 0}",
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -157,11 +157,6 @@ private fun PerfumeEditorDialog(
             imageUri = tempCaptureUri
         }
     }
-
-    // Si quieres además permitir galería, puedes agregar GetContent (opcional):
-    // val pickImage = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
-    //     if (uri != null) imageUri = uri
-    // }
 
     val previewBitmap by remember(imageUri) {
         mutableStateOf(imageUri?.let { loadBitmapFromUri(context, it) })

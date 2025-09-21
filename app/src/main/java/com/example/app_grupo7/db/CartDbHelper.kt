@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 class CartDbHelper(context: Context) : SQLiteOpenHelper(
-    context, "cart.db", null, 1 // si cambias el esquema, sube este número
+    context, "cart.db", null, 2 // 👈 subimos a v2
 ) {
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
@@ -16,6 +16,7 @@ class CartDbHelper(context: Context) : SQLiteOpenHelper(
                 nombre TEXT NOT NULL,
                 precio INTEGER NOT NULL,
                 image_res INTEGER,
+                image_uri TEXT,              -- 👈 nueva columna
                 quantity INTEGER NOT NULL
             );
             """.trimIndent()
@@ -24,7 +25,9 @@ class CartDbHelper(context: Context) : SQLiteOpenHelper(
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        db.execSQL("DROP TABLE IF EXISTS cart_items")
-        onCreate(db)
+        if (oldVersion < 2) {
+            // Migración mínima: añadimos columna sin borrar datos
+            db.execSQL("ALTER TABLE cart_items ADD COLUMN image_uri TEXT")
+        }
     }
 }

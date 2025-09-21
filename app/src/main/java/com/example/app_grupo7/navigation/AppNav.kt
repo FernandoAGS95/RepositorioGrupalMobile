@@ -1,8 +1,6 @@
 package com.example.app_grupo7.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -24,17 +22,11 @@ fun AppNav(
     NavHost(navController, startDestination = "login") {
 
         composable("login") {
-            LoginScreen(
-                navController = navController,
-                vm = authVm
-            )
+            LoginScreen(navController = navController, vm = authVm)
         }
 
         composable("registro") {
-            RegistroScreen(
-                navController = navController,
-                vm = authVm
-            )
+            RegistroScreen(navController = navController, vm = authVm)
         }
 
         composable("home") {
@@ -42,18 +34,27 @@ fun AppNav(
                 onGoCatalogo = { navController.navigate("catalogo") },
                 onLogout = {
                     appState.logout()
-                    navController.navigate("login") {
-                        popUpTo("login") { inclusive = true }
-                    }
+                    navController.navigate("login") { popUpTo("login") { inclusive = true } }
                 },
-                onGoCrud = { navController.navigate("perfume_crud") } // acceso al CRUD
+                onGoCrud = { navController.navigate("perfume_crud") }
             )
         }
 
         composable("catalogo") {
             CatalogoScreen(
-                carritoVm = carritoVm,
-                onGoCarrito = { navController.navigate("carrito") }
+                onGoCarrito = { navController.navigate("carrito") },
+                // 👇 aquí conectamos el botón “Agregar” con el carrito
+                onAddToCart = { id, nombre, precio, imageRes,imageUri  ->
+                    // Cambia por el método real de tu VM si se llama distinto:
+                    // por ejemplo add(...), addItem(...), addOrIncrement(...)
+                    carritoVm.addOrIncrement(
+                        perfumeId = id,
+                        nombre = nombre,
+                        precio = precio,
+                        imageRes = imageRes,
+                        imageUri = imageUri
+                    )
+                }
             )
         }
 

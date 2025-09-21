@@ -1,26 +1,26 @@
 package com.example.app_grupo7.ui.screens
 
+import android.graphics.BitmapFactory
+import android.net.Uri
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Add
+import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Remove
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -33,6 +33,7 @@ fun CarritoScreen(
 ) {
     val items by carritoVm.items.collectAsState()
     val total by carritoVm.total.collectAsState()
+    val context = LocalContext.current
 
     Scaffold(
         topBar = { TopAppBar(title = { Text("Carrito") }) }
@@ -74,22 +75,41 @@ fun CarritoScreen(
                                     .padding(12.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                // Miniatura
-                                it.imageRes?.let { resId ->
-                                    Image(
-                                        painter = painterResource(resId),
-                                        contentDescription = it.nombre,
-                                        modifier = Modifier
-                                            .size(60.dp)
-                                            .clip(RoundedCornerShape(10.dp))
-                                    )
-                                    Spacer(Modifier.width(12.dp))
+                                when {
+                                    it.imageRes != null -> {
+                                        Image(
+                                            painter = painterResource(it.imageRes),
+                                            contentDescription = it.nombre,
+                                            modifier = Modifier
+                                                .size(60.dp)
+                                                .clip(RoundedCornerShape(10.dp))
+                                        )
+                                    }
+                                    it.imageUri != null -> {
+                                        val bmp = remember(it.imageUri) {
+                                            try {
+                                                val uri = Uri.parse(it.imageUri)
+                                                context.contentResolver.openInputStream(uri)?.use { input ->
+                                                    BitmapFactory.decodeStream(input)
+                                                }
+                                            } catch (_: Exception) { null }
+                                        }
+                                        if (bmp != null) {
+                                            Image(
+                                                bitmap = bmp.asImageBitmap(),
+                                                contentDescription = it.nombre,
+                                                modifier = Modifier
+                                                    .size(60.dp)
+                                                    .clip(RoundedCornerShape(10.dp))
+                                            )
+                                        }
+                                    }
                                 }
 
-                                // Información (título + precio unitario)
+                                Spacer(Modifier.width(12.dp))
+
                                 Column(
-                                    modifier = Modifier
-                                        .weight(1f)
+                                    modifier = Modifier.weight(1f)
                                 ) {
                                     Text(
                                         text = it.nombre,
@@ -105,7 +125,6 @@ fun CarritoScreen(
                                     )
                                     Spacer(Modifier.height(10.dp))
 
-                                    // Controles de cantidad
                                     QuantityStepper(
                                         quantity = it.quantity,
                                         onDecrement = { carritoVm.setQty(it.perfumeId, it.quantity - 1) },
@@ -114,11 +133,8 @@ fun CarritoScreen(
                                     )
                                 }
 
-                                // Subtotal alineado a la derecha
                                 Spacer(Modifier.width(8.dp))
-                                Column(
-                                    horizontalAlignment = Alignment.End
-                                ) {
+                                Column(horizontalAlignment = Alignment.End) {
                                     Text(
                                         text = "Subtotal",
                                         style = MaterialTheme.typography.labelMedium,
@@ -136,7 +152,6 @@ fun CarritoScreen(
 
                 Divider(modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp))
 
-                // Total + acciones
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -171,18 +186,65 @@ private fun QuantityStepper(
     onIncrement: () -> Unit,
     onRemove: () -> Unit
 ) {
-    Row(
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        OutlinedButton(onClick = onDecrement) { Text("-") }
-        Spacer(Modifier.width(8.dp))
-        Text(
-            text = "x$quantity",
-            style = MaterialTheme.typography.titleSmall
-        )
-        Spacer(Modifier.width(8.dp))
-        OutlinedButton(onClick = onIncrement) { Text("+") }
-        Spacer(Modifier.width(12.dp))
-        TextButton(onClick = onRemove) { Text("Quitar") }
+    BoxWithConstraints(Modifier.fillMaxWidth()) {
+        val compact = maxWidth < 360.dp   // umbral de compactación
+
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            // Controles de cantidad (izquierda)
+            if (compact) {
+                // Botones pequeños para ahorrar ancho
+                FilledTonalIconButton(onClick = onDecrement, modifier = Modifier.size(36.dp)) {
+                    Icon(Icons.Outlined.Remove, contentDescription = "Menos")
+                }
+                Spacer(Modifier.width(8.dp))
+                Text(text = "x$quantity", style = MaterialTheme.typography.titleSmall)
+                Spacer(Modifier.width(8.dp))
+                FilledTonalIconButton(onClick = onIncrement, modifier = Modifier.size(36.dp)) {
+                    Icon(Icons.Outlined.Add, contentDescription = "Más")
+                }
+            } else {
+                OutlinedButton(
+                    onClick = onDecrement,
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+                    modifier = Modifier.height(40.dp)
+                ) { Text("-") }
+
+                Spacer(Modifier.width(10.dp))
+
+                Text(text = "x$quantity", style = MaterialTheme.typography.titleSmall)
+
+                Spacer(Modifier.width(10.dp))
+
+                OutlinedButton(
+                    onClick = onIncrement,
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+                    modifier = Modifier.height(40.dp)
+                ) { Text("+") }
+            }
+
+            // Empuja el botón "Quitar" a la derecha, en la MISMA fila
+            Spacer(Modifier.weight(1f))
+
+            // Botón quitar (derecha)
+            if (compact) {
+                // Solo ícono para no romper la fila
+                IconButton(onClick = onRemove) {
+                    Icon(Icons.Outlined.Delete, contentDescription = "Quitar")
+                }
+            } else {
+                TextButton(
+                    onClick = onRemove,
+                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+                    modifier = Modifier.height(40.dp)
+                ) {
+                    Icon(Icons.Outlined.Delete, contentDescription = null)
+                    Spacer(Modifier.width(6.dp))
+                    Text("Quitar")
+                }
+            }
+        }
     }
 }

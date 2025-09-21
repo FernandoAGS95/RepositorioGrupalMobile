@@ -19,7 +19,7 @@ class CarritoViewModel(private val store: CartStore) : ViewModel() {
 
     fun addFromPerfume(id: String, nombre: String, precio: Int, imageRes: Int?) {
         viewModelScope.launch {
-            store.addOrIncrement(CartItem(id, nombre, precio, imageRes, 1))
+            store.addOrIncrement(CartItem(id, nombre, precio, imageRes,imageUri = null, 1,))
         }
     }
 
@@ -33,5 +33,21 @@ class CarritoViewModel(private val store: CartStore) : ViewModel() {
 
     fun clear() {
         viewModelScope.launch { store.clear() }
+    }
+    fun addOrIncrement(perfumeId: String, nombre: String, precio: Int, imageRes: Int?,imageUri: String?
+    ) {
+        // Ejemplo si usas un store con esa API:
+        viewModelScope.launch {
+            store.addOrIncrement(
+                CartItem(
+                    perfumeId = perfumeId,
+                    nombre = nombre,
+                    precio = precio,
+                    imageRes = imageRes,
+                    imageUri = imageUri,
+                    quantity = 1
+                )
+            )
+        }
     }
 }

@@ -8,17 +8,15 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 
-// --- Ajusta el package de tu CartItem si difiere ---
 data class CartItem(
     val perfumeId: String,
     val nombre: String,
     val precio: Int,
     val imageRes: Int? = null,
+    val imageUri: String? = null,     // 👈 ahora también soportamos URI
     val quantity: Int = 1
 )
 
-// Si ya tienes una interfaz CartPort en tu VM, déjalo implementado.
-// Si no la tienes, puedes borrar ": CartPort" sin problemas.
 interface CartPort {
     val itemsFlow: Flow<List<CartItem>>
     val totalFlow: Flow<Int>
@@ -58,7 +56,12 @@ class CartStoreSqlite(context: Context) : CartPort {
             if (existing == null) {
                 insertOrReplace(db, newItem)
             } else {
-                val cv = ContentValues().apply { put("quantity", existing.quantity + newItem.quantity) }
+                val cv = ContentValues().apply {
+                    put("quantity", existing.quantity + newItem.quantity)
+                    // Si antes no tenía foto y ahora sí, actualizamos:
+                    if (existing.imageUri == null && newItem.imageUri != null) put("image_uri", newItem.imageUri)
+                    if (existing.imageRes == null && newItem.imageRes != null) put("image_res", newItem.imageRes)
+                }
                 db.update("cart_items", cv, "perfume_id = ?", arrayOf(newItem.perfumeId))
             }
             db.setTransactionSuccessful()
@@ -107,6 +110,7 @@ class CartStoreSqlite(context: Context) : CartPort {
             put("nombre", it.nombre)
             put("precio", it.precio)
             if (it.imageRes != null) put("image_res", it.imageRes) else putNull("image_res")
+            if (it.imageUri != null) put("image_uri", it.imageUri) else putNull("image_uri")
             put("quantity", it.quantity)
         }
         db.insertWithOnConflict("cart_items", null, cv, SQLiteDatabase.CONFLICT_REPLACE)
@@ -115,7 +119,7 @@ class CartStoreSqlite(context: Context) : CartPort {
     private fun findByPerfumeId(db: SQLiteDatabase, perfumeId: String): CartItem? {
         db.rawQuery(
             """
-            SELECT perfume_id, nombre, precio, image_res, quantity
+            SELECT perfume_id, nombre, precio, image_res, image_uri, quantity
             FROM cart_items WHERE perfume_id = ?
             """.trimIndent(),
             arrayOf(perfumeId)
@@ -126,7 +130,8 @@ class CartStoreSqlite(context: Context) : CartPort {
                     nombre = c.getString(1),
                     precio = c.getInt(2),
                     imageRes = if (!c.isNull(3)) c.getInt(3) else null,
-                    quantity = c.getInt(4)
+                    imageUri = if (!c.isNull(4)) c.getString(4) else null,
+                    quantity = c.getInt(5)
                 )
             } else null
         }
@@ -137,7 +142,7 @@ class CartStoreSqlite(context: Context) : CartPort {
         val out = mutableListOf<CartItem>()
         db.rawQuery(
             """
-            SELECT perfume_id, nombre, precio, image_res, quantity
+            SELECT perfume_id, nombre, precio, image_res, image_uri, quantity
             FROM cart_items ORDER BY id DESC
             """.trimIndent(),
             null
@@ -148,7 +153,8 @@ class CartStoreSqlite(context: Context) : CartPort {
                     nombre = c.getString(1),
                     precio = c.getInt(2),
                     imageRes = if (!c.isNull(3)) c.getInt(3) else null,
-                    quantity = c.getInt(4)
+                    imageUri = if (!c.isNull(4)) c.getString(4) else null,
+                    quantity = c.getInt(5)
                 )
             }
         }
