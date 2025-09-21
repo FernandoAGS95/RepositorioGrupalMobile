@@ -1,95 +1,50 @@
 package com.example.app_grupo7.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.app_grupo7.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
+    showCreateButton: Boolean,
     onGoCatalogo: () -> Unit,
     onLogout: () -> Unit,
-    onGoCrud: (() -> Unit)? = null   // 👈 agregado
+    onGoCrud: () -> Unit
 ) {
     Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Perfumería Aura — Inicio") }
-            )
-        }
+        topBar = { TopAppBar(title = { Text("Inicio") }) }
     ) { inner ->
         Column(
             modifier = Modifier
-                .padding(inner)
                 .fillMaxSize()
-                .padding(horizontal = 20.dp)
-                .padding(top = 16.dp),
-            verticalArrangement = Arrangement.Top,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(inner)
+                .padding(horizontal = 24.dp, vertical = 16.dp),
+            verticalArrangement = Arrangement.Center
         ) {
-            // LOGO
-            Image(
-                painter = painterResource(R.drawable.aura),
-                contentDescription = "Logo Perfumería Aura",
-                modifier = Modifier
-                    .fillMaxWidth(0.52f)
-                    .clip(RoundedCornerShape(18.dp)),
-                contentScale = ContentScale.Fit
-            )
-
-            Spacer(Modifier.height(16.dp))
-
-            Text(
-                "Bienvenido/a a Perfumería Aura",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-
-            Spacer(Modifier.height(6.dp))
-
-            Text(
-                "Explora nuestro catálogo y encuentra tu fragancia.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            Spacer(Modifier.height(100.dp))
+            Text(text = "Bienvenid@", style = MaterialTheme.typography.titleLarge)
+            Spacer(Modifier.height(24.dp))
 
             Button(
                 onClick = onGoCatalogo,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
+                modifier = Modifier.fillMaxWidth()
             ) { Text("Ver catálogo") }
 
             Spacer(Modifier.height(12.dp))
 
-            // 👇 BOTÓN NUEVO para el CRUD
-            if (onGoCrud != null) {
+            if (showCreateButton) {
                 Button(
                     onClick = onGoCrud,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(48.dp)
-                ) { Text("Agregar colonia (CRUD)") }
-
+                    modifier = Modifier.fillMaxWidth()
+                ) { Text("Crear producto") }
                 Spacer(Modifier.height(12.dp))
             }
 
-            OutlinedButton(
+            Button(
                 onClick = onLogout,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp)
+                modifier = Modifier.fillMaxWidth()
             ) { Text("Cerrar sesión") }
         }
     }
