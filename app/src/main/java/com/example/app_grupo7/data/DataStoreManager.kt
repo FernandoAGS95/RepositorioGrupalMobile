@@ -9,7 +9,6 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-// DataStore "singleton"
 val Context.dataStore by preferencesDataStore(name = "app_prefs")
 
 class DataStoreManager(private val context: Context){

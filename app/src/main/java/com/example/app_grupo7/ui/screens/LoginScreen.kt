@@ -31,7 +31,6 @@ fun LoginScreen(
                 .fillMaxSize(),
             verticalArrangement = Arrangement.Center
         ) {
-            // Logo / imagen centrada
             Image(
                 painter = painterResource(id = R.drawable.aura),
                 contentDescription = "Aurora",

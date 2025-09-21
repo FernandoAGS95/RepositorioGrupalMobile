@@ -58,7 +58,6 @@ class CartStoreSqlite(context: Context) : CartPort {
             } else {
                 val cv = ContentValues().apply {
                     put("quantity", existing.quantity + newItem.quantity)
-                    // Si antes no tenía foto y ahora sí, actualizamos:
                     if (existing.imageUri == null && newItem.imageUri != null) put("image_uri", newItem.imageUri)
                     if (existing.imageRes == null && newItem.imageRes != null) put("image_res", newItem.imageRes)
                 }
@@ -103,7 +102,6 @@ class CartStoreSqlite(context: Context) : CartPort {
         emitRefresh()
     }
 
-    // ---- internos ----
     private fun insertOrReplace(db: SQLiteDatabase, it: CartItem) {
         val cv = ContentValues().apply {
             put("perfume_id", it.perfumeId)

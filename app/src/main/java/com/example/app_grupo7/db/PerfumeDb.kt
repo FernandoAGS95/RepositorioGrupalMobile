@@ -5,7 +5,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 class PerfumeDbHelper(context: Context) : SQLiteOpenHelper(
-    context, "perfumes.db", null, /* ↑ sube a 2 si ya se creó con el esquema malo */ 2
+    context, "perfumes.db", null, 2
 ) {
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
@@ -21,7 +21,6 @@ class PerfumeDbHelper(context: Context) : SQLiteOpenHelper(
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // Migración simple para este caso de clase:
         db.execSQL("DROP TABLE IF EXISTS perfumes")
         onCreate(db)
     }

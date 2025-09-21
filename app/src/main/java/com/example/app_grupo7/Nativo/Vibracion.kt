@@ -6,10 +6,7 @@ import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 
-/**
- * Vibración/háptica corta y segura (sin runtime permission).
- * Llama a vibrate(context) cuando el usuario agrega al carrito.
- */
+
 fun vibrar(context: Context, durationMs: Long = 50L) {
     try {
         val vibrator: Vibrator? = if (Build.VERSION.SDK_INT >= 31) {
@@ -29,6 +26,5 @@ fun vibrar(context: Context, durationMs: Long = 50L) {
             }
         }
     } catch (_: Exception) {
-        // Silencioso: si no hay vibrador, seguimos normal sin romper UX.
     }
 }

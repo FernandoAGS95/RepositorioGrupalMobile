@@ -16,7 +16,7 @@ fun AppNav(
 ) {
     val navController = rememberNavController()
 
-    // Email en memoria local (sobrevive rotaciones con saveable)
+
     var currentEmail by rememberSaveable { mutableStateOf<String?>(null) }
     val isAdmin = currentEmail.equals("admin@aurora.cl", ignoreCase = true)
 
@@ -35,10 +35,10 @@ fun AppNav(
         }
 
         composable("registro") {
-            // Registro mínimo: si quieres, solo vuelve a login.
+
             RegistroScreen(
                 onRegister = { email, _ ->
-                    // Si quieres que registre y entre directo:
+
                     currentEmail = email.trim()
                     navController.navigate("home") {
                         popUpTo("login") { inclusive = true }
@@ -54,7 +54,7 @@ fun AppNav(
                 onGoCatalogo = { navController.navigate("catalogo") },
                 onLogout = {
                     currentEmail = null
-                    appState.logout() // si ya lo usabas para limpiar DataStore, mantenlo; si no, quítalo
+                    appState.logout()
                     navController.navigate("login") {
                         popUpTo("login") { inclusive = true }
                     }

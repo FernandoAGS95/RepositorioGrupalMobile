@@ -16,7 +16,6 @@ class PerfumeStoreSqlite(context: Context) {
 
     private val dbHelper = PerfumeDbHelper(context.applicationContext)
 
-    // ====== API mínima ======
     fun getAll(): List<PerfumeEntity> {
         val db = dbHelper.readableDatabase
         val out = mutableListOf<PerfumeEntity>()

@@ -36,7 +36,6 @@ class CarritoViewModel(private val store: CartStore) : ViewModel() {
     }
     fun addOrIncrement(perfumeId: String, nombre: String, precio: Int, imageRes: Int?,imageUri: String?
     ) {
-        // Ejemplo si usas un store con esa API:
         viewModelScope.launch {
             store.addOrIncrement(
                 CartItem(

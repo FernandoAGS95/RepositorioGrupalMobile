@@ -187,15 +187,13 @@ private fun QuantityStepper(
     onRemove: () -> Unit
 ) {
     BoxWithConstraints(Modifier.fillMaxWidth()) {
-        val compact = maxWidth < 360.dp   // umbral de compactación
+        val compact = maxWidth < 360.dp
 
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Controles de cantidad (izquierda)
             if (compact) {
-                // Botones pequeños para ahorrar ancho
                 FilledTonalIconButton(onClick = onDecrement, modifier = Modifier.size(36.dp)) {
                     Icon(Icons.Outlined.Remove, contentDescription = "Menos")
                 }
@@ -225,12 +223,9 @@ private fun QuantityStepper(
                 ) { Text("+") }
             }
 
-            // Empuja el botón "Quitar" a la derecha, en la MISMA fila
             Spacer(Modifier.weight(1f))
 
-            // Botón quitar (derecha)
             if (compact) {
-                // Solo ícono para no romper la fila
                 IconButton(onClick = onRemove) {
                     Icon(Icons.Outlined.Delete, contentDescription = "Quitar")
                 }

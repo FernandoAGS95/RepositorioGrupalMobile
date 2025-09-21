@@ -148,7 +148,6 @@ private fun PerfumeEditorDialog(
     var precioText by remember { mutableStateOf(TextFieldValue(initial?.precio?.toString() ?: "")) }
     var imageUri by remember { mutableStateOf(initial?.imageUri?.let(Uri::parse)) }
 
-    // Lanzador nativo de CÁMARA (toma foto a un URI)
     var tempCaptureUri by remember { mutableStateOf<Uri?>(null) }
     val takePicture = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
@@ -183,7 +182,6 @@ private fun PerfumeEditorDialog(
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Button(onClick = {
-                        // Crear un destino (URI) propio de la app y lanzar cámara
                         tempCaptureUri = createImageUri(context)
                         tempCaptureUri?.let { takePicture.launch(it) }
                     }) {
@@ -213,7 +211,6 @@ private fun PerfumeEditorDialog(
     )
 }
 
-// ======= utilidades nativas (sin Coil) =======
 
 private fun loadBitmapFromUri(context: Context, uri: Uri): Bitmap? {
     return try {
@@ -237,10 +234,7 @@ private fun placeholderBitmap(): Bitmap {
     }
 }
 
-/**
- * Crea un URI de archivo propio de la app para que la cámara guarde la foto ahí.
- * No requiere permisos peligrosos porque usamos el directorio de la app + FileProvider.
- */
+
 private fun createImageUri(context: Context): Uri? {
     return try {
         val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(System.currentTimeMillis())

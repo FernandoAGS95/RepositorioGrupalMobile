@@ -39,7 +39,6 @@ import com.example.app_grupo7.viewmodel.PerfumeViewModel
 import kotlinx.coroutines.launch
 
 
-// ----- Modelo de UI local: igual a Perfume + imageUri opcional -----
 private data class UiPerfume(
     val id: String,
     val nombre: String,
@@ -57,12 +56,10 @@ fun CatalogoScreen(
     vm: PerfumeViewModel = viewModel(),
     onGoPerfil: (() -> Unit)? = null,
     onGoCarrito: (() -> Unit)? = null,
-    // 👇 nuevo: callback para agregar al carrito
     onAddToCart: ((id: String, nombre: String, precio: Int, imageRes: Int?,imageUri: String?) -> Unit)? = null
 ) {
     val repoPerfumes by vm.catalogo.collectAsState()
 
-    // 1) Adaptamos el catálogo fijo -> UiPerfume (sin imageUri)
     val uiRepoPerfumes = remember(repoPerfumes) {
         repoPerfumes.map { p ->
             UiPerfume(
@@ -78,7 +75,6 @@ fun CatalogoScreen(
         }
     }
 
-    // 2) Leemos perfumes creados en SQLite (con imageUri)
     val context = LocalContext.current
     val store = remember { PerfumeStoreSqlite(context) }
     var uiDbPerfumes by remember { mutableStateOf<List<UiPerfume>>(emptyList()) }
@@ -98,7 +94,6 @@ fun CatalogoScreen(
             )
         }
     }
-    // Re-cargar al volver a esta pantalla
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val obs = LifecycleEventObserver { _, ev ->
@@ -123,7 +118,7 @@ fun CatalogoScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(obs) }
     }
 
-    // 3) Lista final a mostrar
+
     val perfumes = remember(uiRepoPerfumes, uiDbPerfumes) { uiRepoPerfumes + uiDbPerfumes }
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -170,10 +165,8 @@ fun CatalogoScreen(
                         PerfumeCard(
                             p = p,
                             onAdd = {
-                                // 1) Agregamos al carrito
                                 vibrar(ctx)
                                 onAddToCart?.invoke(p.id, p.nombre, p.precio, p.imageRes,p.imageUri)
-                                // 2) Feedback visual
                                 scope.launch {
                                     snackbarHostState.showSnackbar("Agregado: ${p.nombre}")
                                 }
@@ -219,12 +212,10 @@ private fun PerfumeCard(
     ) {
         Column(Modifier.padding(Dimens.cardInner)) {
 
-            // ====== FILA PRINCIPAL: miniatura + texto ======
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                // 1) Drawable (catálogo fijo)
                 if (p.imageRes != null) {
                     Image(
                         painter = painterResource(p.imageRes),
@@ -236,7 +227,6 @@ private fun PerfumeCard(
                     )
                     Spacer(Modifier.width(12.dp))
                 } else {
-                    // 2) URI (creado por el usuario)
                     p.imageUri?.let { uriStr ->
                         val context = LocalContext.current
                         val bitmap: Bitmap? = remember(uriStr) {

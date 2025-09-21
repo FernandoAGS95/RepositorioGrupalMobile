@@ -18,7 +18,6 @@ class AppState(private val dataStore: DataStoreManager){
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
-    // Carga inicial
     fun cargarDatos(){
         scope.launch {
             val users = dataStore.getUsers().first()
@@ -34,7 +33,6 @@ class AppState(private val dataStore: DataStoreManager){
         }
     }
 
-    // Registro
     fun registrarUsuario(email: String, password: String): Boolean{
         if (usuarios.any{ it.email == email }) return false
         val nuevo = Usuario(email, password)
@@ -43,7 +41,6 @@ class AppState(private val dataStore: DataStoreManager){
         return true
     }
 
-    // Guardar notas
     fun agregarNotas(nota: String){
         val email = usuarioActual?.email ?: return
         val notas = notasPorUsuario.getOrPut(email){ mutableStateListOf() }
@@ -51,7 +48,7 @@ class AppState(private val dataStore: DataStoreManager){
         guardarNotas()
     }
 
-    // Login
+
     fun login(email: String, password: String) : Boolean{
         val user = usuarios.find { it.email == email && it.password == password }
         return if(user != null){
@@ -60,16 +57,13 @@ class AppState(private val dataStore: DataStoreManager){
         } else false
     }
 
-    // Logout
     fun logout(){ usuarioActual = null }
 
-    // Leer notas del usuario logeado
     fun obtenerNotas(): List<String>{
         val email = usuarioActual?.email ?: return emptyList()
         return notasPorUsuario[email] ?: mutableStateListOf()
     }
 
-    // Borrar nota por índice
     fun borrarNotas(index : Int){
         val email = usuarioActual?.email ?: return
         notasPorUsuario[email]?.let {
@@ -80,7 +74,6 @@ class AppState(private val dataStore: DataStoreManager){
         }
     }
 
-    // Persistir en DataStore
     private fun guardarUsuarios(){
         scope.launch { dataStore.saveUsers(usuarios) }
     }
