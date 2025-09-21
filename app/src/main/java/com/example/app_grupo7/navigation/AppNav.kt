@@ -1,6 +1,8 @@
 package com.example.app_grupo7.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -12,7 +14,10 @@ import com.example.app_grupo7.viewmodel.AuthVMFactory
 import com.example.app_grupo7.viewmodel.AuthViewModel
 
 @Composable
-fun AppNav(appState: AppState, carritoVm: CarritoViewModel) {
+fun AppNav(
+    appState: AppState,
+    carritoVm: CarritoViewModel
+) {
     val navController = rememberNavController()
     val authVm: AuthViewModel = viewModel(factory = AuthVMFactory(appState))
 
@@ -32,7 +37,6 @@ fun AppNav(appState: AppState, carritoVm: CarritoViewModel) {
             )
         }
 
-        // pantalla principal
         composable("home") {
             HomeScreen(
                 onGoCatalogo = { navController.navigate("catalogo") },
@@ -41,7 +45,8 @@ fun AppNav(appState: AppState, carritoVm: CarritoViewModel) {
                     navController.navigate("login") {
                         popUpTo("login") { inclusive = true }
                     }
-                }
+                },
+                onGoCrud = { navController.navigate("perfume_crud") } // acceso al CRUD
             )
         }
 
@@ -53,9 +58,11 @@ fun AppNav(appState: AppState, carritoVm: CarritoViewModel) {
         }
 
         composable("carrito") {
-            CarritoScreen(
-                carritoVm = carritoVm
-            )
+            CarritoScreen(carritoVm = carritoVm)
+        }
+
+        composable("perfume_crud") {
+            PerfumeCrudScreen()
         }
     }
 }

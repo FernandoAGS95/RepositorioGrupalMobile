@@ -1,23 +1,24 @@
 package com.example.app_grupo7.ui.screens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.Image
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.draw.clip
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import com.example.app_grupo7.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     onGoCatalogo: () -> Unit,
-    onLogout: () -> Unit
+    onLogout: () -> Unit,
+    onGoCrud: (() -> Unit)? = null   // 👈 agregado
 ) {
     Scaffold(
         topBar = {
@@ -61,7 +62,6 @@ fun HomeScreen(
                 color = MaterialTheme.colorScheme.onSurface
             )
 
-
             Spacer(Modifier.height(100.dp))
 
             Button(
@@ -73,14 +73,24 @@ fun HomeScreen(
 
             Spacer(Modifier.height(12.dp))
 
+            // 👇 BOTÓN NUEVO para el CRUD
+            if (onGoCrud != null) {
+                Button(
+                    onClick = onGoCrud,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
+                ) { Text("Agregar colonia (CRUD)") }
+
+                Spacer(Modifier.height(12.dp))
+            }
+
             OutlinedButton(
                 onClick = onLogout,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp)
             ) { Text("Cerrar sesión") }
-
-            Spacer(Modifier.height(12.dp))
         }
     }
 }
