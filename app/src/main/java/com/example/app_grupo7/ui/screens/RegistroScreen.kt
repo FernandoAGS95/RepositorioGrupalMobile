@@ -4,86 +4,76 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import com.example.app_grupo7.viewmodel.UsuarioViewModel
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.ui.Alignment
+import androidx.navigation.NavController
+import com.example.app_grupo7.data.AppState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegistroScreen(
-    vm: UsuarioViewModel,
-    onContinuar: () -> Unit
-) {
-    val ui by vm.ui.collectAsState()
-    val errs by vm.errores.collectAsState()
+fun RegistroScreen(navController: NavController, appState: AppState){
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    var error by remember { mutableStateOf("") }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Registro") }) }
-    ) { inner ->
-        Column(
+        topBar = { TopAppBar(title = { Text("Registro de Usuario") }) }
+    ) { padding ->
+        Column (
             modifier = Modifier
                 .fillMaxSize()
-                .padding(inner)
+                .padding(padding)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.Center
         ) {
             OutlinedTextField(
-                value = ui.nombre,
-                onValueChange = vm::onNombreChange,
-                label = { Text("Nombre") },
-                isError = errs.nombre != null,
-                supportingText = { if (errs.nombre != null) Text(errs.nombre!!) },
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Email")},
                 modifier = Modifier.fillMaxWidth()
             )
+            Spacer(Modifier.height(8.dp))
             OutlinedTextField(
-                value = ui.correo,
-                onValueChange = vm::onCorreoChange,
-                label = { Text("Correo") },
-                isError = errs.correo != null,
-                supportingText = { if (errs.correo != null) Text(errs.correo!!) },
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Contraseña")},
                 modifier = Modifier.fillMaxWidth()
             )
+            Spacer(Modifier.height(8.dp))
             OutlinedTextField(
-                value = ui.clave,
-                onValueChange = vm::onClaveChange,
-                label = { Text("Clave") },
-                visualTransformation = PasswordVisualTransformation(),
-                isError = errs.clave != null,
-                supportingText = { if (errs.clave != null) Text(errs.clave!!) },
+                value = confirmPassword,
+                onValueChange = { confirmPassword = it },
+                label = { Text("Confirmar Contraseña") },
                 modifier = Modifier.fillMaxWidth()
             )
-            OutlinedTextField(
-                value = ui.direccion,
-                onValueChange = vm::onDireccionChange,
-                label = { Text("Dirección") },
-                isError = errs.direccion != null,
-                supportingText = { if (errs.direccion != null) Text(errs.direccion!!) },
-                modifier = Modifier.fillMaxWidth()
-            )
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                Checkbox(
-                    checked = ui.aceptaTerminos,
-                    onCheckedChange = { vm.onAceptaChange(it) }
-                )
-                Text("Acepto los términos y condiciones")
-            }
-            if (errs.aceptaTerminos != null) {
-                Text(errs.aceptaTerminos!!, color = MaterialTheme.colorScheme.error)
+            Spacer(Modifier.height(16.dp))
+
+            if (error.isNotEmpty()) {
+                Text(error, color = MaterialTheme.colorScheme.error)
+                Spacer(Modifier.height(8.dp))
             }
 
             Button(
                 onClick = {
-                    if (vm.validarFormulario()) onContinuar()
+                    when {
+                        email.isBlank() || password.isBlank() || confirmPassword.isBlank() ->
+                            error = "Todos los campos son obligatorios"
+                        !email.contains("@") ->
+                            error = "Email no válido"
+                        password.length < 4 ->
+                            error = "La contraseña debe tener al menos 4 caracteres"
+                        password != confirmPassword ->
+                            error = "Las contraseñas no coinciden"
+                        !appState.registrarUsuario(email, password) ->
+                            error = "El usuario ya existe"
+                        else -> {
+                            error = ""
+                            navController.navigate("login")
+                        }
+                    }
                 },
                 modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Continuar")
-            }
+            ) { Text("Registrarse") }
         }
     }
 }
