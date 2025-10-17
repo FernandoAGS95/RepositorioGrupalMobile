@@ -7,14 +7,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.app_grupo7.data.AppState
+import com.example.app_grupo7.viewmodel.AuthViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController, appState: AppState){
-    var usuario by remember { mutableStateOf("") }
-    var password by remember {  mutableStateOf("") }
-    var error by remember {  mutableStateOf("") }
+fun LoginScreen(navController: NavController, vm: AuthViewModel) {
+    val ui     by vm.ui.collectAsState()
+    val errors by vm.errors.collectAsState()
 
     Scaffold(
         topBar = {
@@ -35,40 +34,41 @@ fun LoginScreen(navController: NavController, appState: AppState){
             verticalArrangement = Arrangement.Center
         ) {
             OutlinedTextField(
-                value = usuario,
-                onValueChange = { usuario = it },
-                label = { Text("Usuario")},
+                value = ui.email,
+                onValueChange = vm::onEmailChange,
+                label = { Text("Email") },
+                isError = errors.email != null,
+                supportingText = { errors.email?.let { Text(it) } },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.height(8.dp))
             OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
+                value = ui.password,
+                onValueChange = vm::onPasswordChange,
                 label = { Text("Contraseña") },
+                isError = errors.password != null,
+                supportingText = { errors.password?.let { Text(it) } },
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.height(16.dp))
-            if (error.isNotEmpty()){
-                Text(error, color= MaterialTheme.colorScheme.error)
+
+            errors.general?.let {
+                Text(it, color = MaterialTheme.colorScheme.error)
                 Spacer(Modifier.height(8.dp))
             }
+
             Button(
                 onClick = {
-                    if (usuario.isBlank() || password.isBlank()){
-                        error = "Debe Ingresar usuario y contraseña"
-                    }else if (appState.login(usuario, password)){
-                        error = ""
+                    if (vm.login()) {
                         navController.navigate("catalogo") {
-                            popUpTo("login") { inclusive = true }  //  para que no vuelva al login con Back
+                            popUpTo("login") { inclusive = true }
                         }
-                    }else{
-                        error = "Usuario y/o Contraseña incorrectos"
                     }
                 },
                 modifier = Modifier.fillMaxWidth()
             ) { Text("Inicio de Sesión") }
 
-            TextButton(onClick = { navController.navigate("registro")}) {
+            TextButton(onClick = { navController.navigate("registro") }) {
                 Text("¿No tienes cuenta? Regístrate")
             }
         }
