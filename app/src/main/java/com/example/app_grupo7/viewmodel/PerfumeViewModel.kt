@@ -11,7 +11,7 @@ class PerfumeViewModel : ViewModel() {
     val catalogo: StateFlow<List<Perfume>> = _catalogo
 
     init {
-        // Carga inicial (luego podría venir de Room/API)
+        // Carga inicial
         _catalogo.value = PerfumeRepository.getCatalogo()
     }
 }

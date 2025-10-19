@@ -12,5 +12,5 @@ data class AuthErrors(
     val email: String? = null,
     val password: String? = null,
     val confirmPassword: String? = null,
-    val general: String? = null         // para errores globales (credenciales inválidas, etc.)
+    val general: String? = null         // para errores globales (credenciales inválidas, etc)
 )
