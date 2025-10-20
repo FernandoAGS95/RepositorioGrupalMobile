@@ -38,11 +38,12 @@ import androidx.compose.ui.text.style.TextOverflow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CatalogoScreen(vm: PerfumeViewModel = viewModel(), onGoPerfil: (() -> Unit)? = null) {
+fun CatalogoScreen(vm: PerfumeViewModel = viewModel(), onGoPerfil: (() -> Unit)? = null, onGoCarrito: (() -> Unit)? = null) {
     val perfumes by vm.catalogo.collectAsState()
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+
 
     Scaffold(
         topBar = {
@@ -55,6 +56,13 @@ fun CatalogoScreen(vm: PerfumeViewModel = viewModel(), onGoPerfil: (() -> Unit)?
                         //}
                     //}
                 //}
+                actions = {
+                    onGoCarrito?.let {
+                        TextButton(onClick = it) {
+                            Text("Ver carrito")
+                        }
+                    }
+                }
             )
         },
         snackbarHost = {

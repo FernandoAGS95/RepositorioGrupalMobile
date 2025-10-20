@@ -15,6 +15,13 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.app_grupo7.viewmodel.AuthViewModel
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.draw.clip
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.Alignment
+import com.example.app_grupo7.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -42,6 +49,17 @@ fun LoginScreen(navController: NavController, vm: AuthViewModel) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.Center
         ) {
+            Image(
+                painter = painterResource(R.drawable.aura),
+                contentDescription = "Logo Perfumería Aura",
+                modifier = Modifier
+                    .fillMaxWidth(0.85f)
+                    .aspectRatio(1f)
+                    .clip(RoundedCornerShape(20.dp))
+                    .align(Alignment.CenterHorizontally),
+                contentScale = ContentScale.Fit
+            )
+            Spacer(Modifier.height(20.dp))
             // EMAIL
             OutlinedTextField(
                 value = ui.email,

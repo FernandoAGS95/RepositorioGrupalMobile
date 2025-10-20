@@ -46,8 +46,13 @@ fun AppNav(appState: AppState) {
 
         composable("catalogo") {
             CatalogoScreen(
-
+                onGoCarrito = { navController.navigate("carrito") }
             )
+        }
+
+
+        composable("carrito") {
+            CarritoScreen()
         }
     }
 }

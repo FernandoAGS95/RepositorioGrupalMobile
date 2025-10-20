@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.app_grupo7.viewmodel.AuthViewModel
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RegistroScreen(navController: NavController, vm: AuthViewModel) {
@@ -44,6 +45,8 @@ fun RegistroScreen(navController: NavController, vm: AuthViewModel) {
                 modifier = Modifier.fillMaxWidth()
             )
             Spacer(Modifier.height(8.dp))
+
+
 
             OutlinedTextField(
                 value = ui.password,
