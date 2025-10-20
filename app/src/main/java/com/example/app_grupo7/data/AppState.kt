@@ -18,7 +18,7 @@ class AppState(private val dataStore: DataStoreManager){
 
     private val scope = CoroutineScope(Dispatchers.IO)
 
-    // Carga inicial desde DataStore
+    // Carga inicial
     fun cargarDatos(){
         scope.launch {
             val users = dataStore.getUsers().first()
@@ -69,7 +69,7 @@ class AppState(private val dataStore: DataStoreManager){
         return notasPorUsuario[email] ?: mutableStateListOf()
     }
 
-    // Borrar nota por índice (del usuario logeado)
+    // Borrar nota por índice
     fun borrarNotas(index : Int){
         val email = usuarioActual?.email ?: return
         notasPorUsuario[email]?.let {

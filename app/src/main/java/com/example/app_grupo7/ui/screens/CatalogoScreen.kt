@@ -46,7 +46,6 @@ fun CatalogoScreen(vm: PerfumeViewModel = viewModel(), onGoPerfil: (() -> Unit)?
 
     Scaffold(
         topBar = {
-            // TopBar con jerarquía clara + acción Perfil (opcional)
             TopAppBar(
                 title = { Text("Catálogo de perfumes") },
                 actions = {
@@ -163,7 +162,6 @@ fun PerfumeCard(
 
             Spacer(Modifier.height(12.dp))
 
-            // Botones apilados (no se corta el texto)
             TextButton(
                 onClick = { expanded = !expanded },
                 modifier = Modifier.fillMaxWidth()

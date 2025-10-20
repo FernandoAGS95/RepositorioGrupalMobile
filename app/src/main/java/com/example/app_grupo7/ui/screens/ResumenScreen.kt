@@ -26,7 +26,6 @@ fun ResumenScreen(vm: UsuarioViewModel) {
             Text("Correo: ${ui.correo}")
             Text("Dirección: ${ui.direccion}")
             Text("Acepta términos: ${if (ui.aceptaTerminos) "Sí" else "No"}")
-            // (La clave no se muestra por seguridad)
         }
     }
 }

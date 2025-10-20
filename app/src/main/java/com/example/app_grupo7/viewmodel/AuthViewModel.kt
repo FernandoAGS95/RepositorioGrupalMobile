@@ -101,7 +101,7 @@ class AuthViewModel(private val appState: AppState) : ViewModel() {
     }
 }
 
-// Factory para inyectar AppState sin Hilt
+// Factory para inyectar AppState
 class AuthVMFactory(private val appState: AppState) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
