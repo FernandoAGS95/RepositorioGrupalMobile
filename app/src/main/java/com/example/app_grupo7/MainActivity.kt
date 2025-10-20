@@ -8,6 +8,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.app_grupo7.data.AppState
 import com.example.app_grupo7.data.DataStoreManager
 import com.example.app_grupo7.navigation.AppNav
+import com.example.app_grupo7.ui.theme.AppTheme
 
 
 class MainActivity : ComponentActivity() {
@@ -16,10 +17,10 @@ class MainActivity : ComponentActivity() {
 
         val dataStore = DataStoreManager(applicationContext)
         val appState = AppState(dataStore)
-        appState.cargarDatos() // carga inicial desde DataStore
+        appState.cargarDatos()
 
         setContent {
-            MaterialTheme {
+            AppTheme {
                 AppNav(appState)
             }
         }

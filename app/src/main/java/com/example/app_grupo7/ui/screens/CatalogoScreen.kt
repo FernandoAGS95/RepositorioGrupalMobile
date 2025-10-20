@@ -48,13 +48,13 @@ fun CatalogoScreen(vm: PerfumeViewModel = viewModel(), onGoPerfil: (() -> Unit)?
         topBar = {
             TopAppBar(
                 title = { Text("Catálogo de perfumes") },
-                actions = {
-                    if (onGoPerfil != null) {
-                        IconButton(onClick = onGoPerfil) {
-                            Icon(Icons.Outlined.AccountCircle, contentDescription = "Perfil")
-                        }
-                    }
-                }
+                //actions = {
+                  //  if (onGoPerfil != null) {
+                    //    IconButton(onClick = onGoPerfil) {
+                      //      Icon(Icons.Outlined.AccountCircle, contentDescription = "Perfil")
+                        //}
+                    //}
+                //}
             )
         },
         snackbarHost = {

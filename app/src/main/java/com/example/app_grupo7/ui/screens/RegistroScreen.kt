@@ -25,7 +25,7 @@ fun RegistroScreen(navController: NavController, vm: AuthViewModel) {
     var showPwd2 by remember { mutableStateOf(false) }
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text("Registro de Usuario") }) }
+        topBar = { TopAppBar(title = { Text("Perfumería Aura - Registro") }) }
     ) { padding ->
         Column(
             modifier = Modifier

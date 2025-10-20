@@ -29,9 +29,9 @@ fun LoginScreen(navController: NavController, vm: AuthViewModel) {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimaryContainer
                 ),
-                title = { Text("Login") }
+                title = { Text("Perfumería Aura - Login") }
             )
         }
     ) { padding ->
@@ -83,7 +83,7 @@ fun LoginScreen(navController: NavController, vm: AuthViewModel) {
             Button(
                 onClick = {
                     if (vm.login()) {
-                        navController.navigate("catalogo") {
+                        navController.navigate("home") {
                             popUpTo("login") { inclusive = true }
                         }
                     }

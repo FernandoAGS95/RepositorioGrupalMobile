@@ -1,57 +1,59 @@
 package com.example.app_grupo7.ui.theme
 
-import android.app.Activity
-import android.os.Build
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+private val LightColors = lightColorScheme(
+    primary = AuraPrimary,
+    onPrimary = AuraOnPrimary,
+    primaryContainer = AuraPrimaryContainer,
+    onPrimaryContainer = AuraOnPrimaryCont,
+    secondary = AuraSecondary,
+    onSecondary = AuraOnSecondary,
+    secondaryContainer = AuraSecondaryCont,
+    onSecondaryContainer = AuraOnSecondaryCont,
+    tertiary = AuraTertiary,
+    onTertiary = AuraOnTertiary,
+    tertiaryContainer = AuraTertiaryCont,
+    onTertiaryContainer = AuraOnTertiaryCont,
+    background = AuraBackground,
+    onBackground = AuraOnBackground,
+    surface = AuraSurface,
+    onSurface = AuraOnSurface,
+    error = AuraError,
+    onError = AuraOnError
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+private val DarkColors = darkColorScheme(
+    primary = AuraPrimaryDark,
+    onPrimary = AuraOnPrimaryDark,
+    primaryContainer = AuraPrimaryContainerDark,
+    onPrimaryContainer = AuraOnPrimaryContDark,
+    secondary = AuraSecondaryDark,
+    onSecondary = AuraOnSecondaryDark,
+    secondaryContainer = AuraSecondaryContDark,
+    onSecondaryContainer = AuraOnSecondaryContDark,
+    tertiary = AuraTertiaryDark,
+    onTertiary = AuraOnTertiaryDark,
+    tertiaryContainer = AuraTertiaryContDark,
+    onTertiaryContainer = AuraOnTertiaryContDark,
+    background = AuraBackgroundDark,
+    onBackground = AuraOnBackgroundDark,
+    surface = AuraSurfaceDark,
+    onSurface = AuraOnSurfaceDark,
+    error = AuraError,
+    onError = AuraOnErrorDark
 )
 
 @Composable
-fun App_Grupo7Theme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
+fun AppTheme(
+    darkTheme: Boolean = false,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = if (darkTheme) DarkColors else LightColors,
         typography = Typography,
         content = content
     )
