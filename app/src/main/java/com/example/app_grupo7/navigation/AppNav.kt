@@ -1,13 +1,15 @@
 package com.example.app_grupo7.navigation
 
-import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.Composable
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.app_grupo7.cart.CarritoViewModel
 import com.example.app_grupo7.data.AppState
 import com.example.app_grupo7.ui.screens.*
+import com.example.app_grupo7.viewmodel.AuthVMFactory
+import com.example.app_grupo7.viewmodel.AuthViewModel
+import com.example.app_grupo7.cart.CarritoViewModel
 
 @Composable
 fun AppNav(
@@ -16,44 +18,29 @@ fun AppNav(
 ) {
     val navController = rememberNavController()
 
-
-    var currentEmail by rememberSaveable { mutableStateOf<String?>(null) }
-    val isAdmin = currentEmail.equals("admin@aurora.cl", ignoreCase = true)
+    // ViewModel compartido para login/registro
+    val authVm: AuthViewModel = viewModel(factory = AuthVMFactory(appState))
 
     NavHost(navController = navController, startDestination = "login") {
 
         composable("login") {
-            LoginScreen(
-                onLogin = { email, _ ->
-                    currentEmail = email.trim()
-                    navController.navigate("home") {
-                        popUpTo("login") { inclusive = true }
-                    }
-                },
-                onGoRegistro = { navController.navigate("registro") }
-            )
+            LoginScreen(navController = navController, vm = authVm)
         }
 
         composable("registro") {
-
-            RegistroScreen(
-                onRegister = { email, _ ->
-
-                    currentEmail = email.trim()
-                    navController.navigate("home") {
-                        popUpTo("login") { inclusive = true }
-                    }
-                },
-                onBack = { navController.popBackStack() }
-            )
+            RegistroScreen(navController = navController, vm = authVm)
         }
 
         composable("home") {
+            // Admin si el usuario logeado tiene este email
+            val isAdmin = appState.usuarioActual
+                ?.email
+                ?.equals("admin@aura.cl", ignoreCase = true) == true
+
             HomeScreen(
                 showCreateButton = isAdmin,
                 onGoCatalogo = { navController.navigate("catalogo") },
                 onLogout = {
-                    currentEmail = null
                     appState.logout()
                     navController.navigate("login") {
                         popUpTo("login") { inclusive = true }
